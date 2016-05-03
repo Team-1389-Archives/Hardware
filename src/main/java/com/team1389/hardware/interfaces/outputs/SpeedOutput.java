@@ -1,4 +1,4 @@
-package com.team1389.hardware.interfaces;
+package com.team1389.hardware.interfaces.outputs;
 
 /**
  * Represents a component whose speed can be directly controlled

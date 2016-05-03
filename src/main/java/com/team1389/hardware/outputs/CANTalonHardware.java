@@ -1,9 +1,9 @@
 package com.team1389.hardware.outputs;
 
 import com.team1389.hardware.configuration.PIDConstants;
-import com.team1389.hardware.interfaces.PositionOutput;
-import com.team1389.hardware.interfaces.SpeedOutput;
-import com.team1389.hardware.interfaces.VoltageOutput;
+import com.team1389.hardware.interfaces.outputs.PositionOutput;
+import com.team1389.hardware.interfaces.outputs.SpeedOutput;
+import com.team1389.hardware.interfaces.outputs.VoltageOutput;
 import com.team1389.hardware.util.state.State;
 import com.team1389.hardware.util.state.StateTracker;
 

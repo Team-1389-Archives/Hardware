@@ -1,4 +1,4 @@
-package com.team1389.hardware.interfaces;
+package com.team1389.hardware.interfaces.inputs;
 
 /**
  * An input that gives a value from -1 to 1

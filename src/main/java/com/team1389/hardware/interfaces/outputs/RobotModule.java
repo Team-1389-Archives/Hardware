@@ -1,4 +1,4 @@
-package com.team1389.hardware;
+package com.team1389.hardware.interfaces.outputs;
 
 import jaci.openrio.toast.lib.log.Logger;
 import jaci.openrio.toast.lib.module.IterativeModule;

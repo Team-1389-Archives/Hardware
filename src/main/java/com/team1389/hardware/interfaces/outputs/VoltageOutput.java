@@ -1,4 +1,4 @@
-package com.team1389.hardware.interfaces;
+package com.team1389.hardware.interfaces.outputs;
 
 /**
  * Represents a component that can be controlled by voltage[

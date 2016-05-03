@@ -1,4 +1,4 @@
-package com.team1389.hardware.interfaces;
+package com.team1389.hardware.interfaces.inputs;
 
 /**
  * Any input with two states, like a limit switch 

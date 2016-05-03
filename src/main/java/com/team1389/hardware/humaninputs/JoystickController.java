@@ -1,8 +1,8 @@
 package com.team1389.hardware.humaninputs;
 
-import com.team1389.hardware.interfaces.OnOffInput;
-import com.team1389.hardware.interfaces.POVInput;
-import com.team1389.hardware.interfaces.RangeInput;
+import com.team1389.hardware.interfaces.inputs.OnOffInput;
+import com.team1389.hardware.interfaces.inputs.POVInput;
+import com.team1389.hardware.interfaces.inputs.RangeInput;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick.RumbleType;

@@ -1,4 +1,4 @@
-package com.team1389.hardware;
+package com.team1389.hardware.interfaces.inputs;
 
 /**
  * Represents a component that can detect its position
