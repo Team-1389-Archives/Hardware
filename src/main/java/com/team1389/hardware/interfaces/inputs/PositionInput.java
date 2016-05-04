@@ -9,4 +9,10 @@ public interface PositionInput {
 	 * @return The position of the component in rotations
 	 */
 	public double getPosition();
+	
+	public static PositionInput invert(PositionInput positionInput){
+		return () -> {
+			return -positionInput.getPosition();
+		};
+	}
 }

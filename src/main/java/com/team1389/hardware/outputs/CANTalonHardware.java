@@ -1,5 +1,8 @@
 package com.team1389.hardware.outputs;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.team1389.hardware.configuration.PIDConstants;
 import com.team1389.hardware.control.PIDConfiguration;
 import com.team1389.hardware.interfaces.inputs.PositionInput;
@@ -9,13 +12,14 @@ import com.team1389.hardware.interfaces.outputs.SpeedOutput;
 import com.team1389.hardware.interfaces.outputs.VoltageOutput;
 import com.team1389.hardware.util.state.State;
 import com.team1389.hardware.util.state.StateTracker;
+import com.team1389.hardware.watch.Watchable;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
-public class CANTalonHardware {
-	StateTracker stateTracker;
-	CANTalon wpiTalon;
+public class CANTalonHardware implements Watchable{
+	final StateTracker stateTracker;
+	final CANTalon wpiTalon;
 
 	public CANTalonHardware(int deviceNumber) {
 		stateTracker = new StateTracker();
@@ -73,5 +77,21 @@ public class CANTalonHardware {
 
 	private void setPidConstants(CANTalon wpiTalon, PIDConstants pidConstants) {
 		wpiTalon.setPID(pidConstants.p, pidConstants.i, pidConstants.d);
+	}
+
+	@Override
+	public String getName() {
+		return "CAN Talon " + wpiTalon.getDeviceID();
+	}
+
+	@Override
+	public Map<String, String> getInfo() {
+		Map<String, String> info = new HashMap<>();
+		
+		info.put("speed", "" + wpiTalon.getSpeed());
+		info.put("position", "" + wpiTalon.getPosition());
+		info.put("voltage out", "" + wpiTalon.getOutputVoltage());
+		
+		return info;
 	}
 }

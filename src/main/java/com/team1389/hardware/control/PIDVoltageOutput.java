@@ -1,5 +1,4 @@
 package com.team1389.hardware.control;
-
 import com.team1389.hardware.interfaces.inputs.PositionInput;
 import com.team1389.hardware.interfaces.inputs.SpeedInput;
 import com.team1389.hardware.interfaces.outputs.PositionOutput;
@@ -22,8 +21,8 @@ import edu.wpi.first.wpilibj.PIDSource;
  * @author Jacob Prinz
  */
 public class PIDVoltageOutput {
-	StateTracker stateTracker;
-	VoltageOutput voltageOutput;
+	final StateTracker stateTracker;
+	final VoltageOutput voltageOutput;
 	
 	public PIDVoltageOutput(VoltageOutput voltageOutput) {
 		this.voltageOutput = voltageOutput;
@@ -86,8 +85,14 @@ public class PIDVoltageOutput {
 	}
 	
 	private static PIDController makeController(PIDConfiguration config, PIDSource source, PIDOutput output){
+		PIDSource finalSource;
+		if (config.isSensorReversed){
+			finalSource = new InvertPIDSource(source);
+		} else {
+			finalSource = source;
+		}
 		PIDController controller = new PIDController(config.pidConstants.p, config.pidConstants.i, config.pidConstants.d,
-				source, output);
+				finalSource, output);
 		controller.setContinuous(config.isContinuous);
 		return controller;
 	}
