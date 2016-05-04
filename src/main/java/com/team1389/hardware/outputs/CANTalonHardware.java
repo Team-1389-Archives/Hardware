@@ -1,6 +1,9 @@
 package com.team1389.hardware.outputs;
 
 import com.team1389.hardware.configuration.PIDConstants;
+import com.team1389.hardware.control.PIDConfiguration;
+import com.team1389.hardware.interfaces.inputs.PositionInput;
+import com.team1389.hardware.interfaces.inputs.SpeedInput;
 import com.team1389.hardware.interfaces.outputs.PositionOutput;
 import com.team1389.hardware.interfaces.outputs.SpeedOutput;
 import com.team1389.hardware.interfaces.outputs.VoltageOutput;
@@ -30,11 +33,11 @@ public class CANTalonHardware {
 		};
 	}
 
-	public SpeedOutput getSpeedOutput(PIDConstants pidConstants, boolean sensorIsReversed) {
+	public SpeedOutput getSpeedOutput(PIDConfiguration config) {
 		State speedState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.Speed);
-			setPidConstants(wpiTalon, pidConstants);
-			wpiTalon.reverseSensor(sensorIsReversed);
+			setPidConstants(wpiTalon, config.pidConstants);
+			wpiTalon.reverseSensor(config.isSensorReversed);
 		});
 
 		return (double speed) -> {
@@ -43,16 +46,28 @@ public class CANTalonHardware {
 		};
 	}
 
-	public PositionOutput getPositionOutput(PIDConstants pidConstants, boolean sensorIsReversed) {
+	public PositionOutput getPositionOutput(PIDConfiguration config) {
 		State positionState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.Position);
-			setPidConstants(wpiTalon, pidConstants);
-			wpiTalon.reverseSensor(sensorIsReversed);
+			setPidConstants(wpiTalon, config.pidConstants);
+			wpiTalon.reverseSensor(config.isSensorReversed);
 		});
 
 		return (double position) -> {
 			positionState.init();
 			wpiTalon.set(position);
+		};
+	}
+	
+	public SpeedInput getSpeedInput(){
+		return () -> {
+			return wpiTalon.getSpeed();
+		};
+	}
+	
+	public PositionInput getPositionInput(){
+		return () -> {
+			return wpiTalon.getPosition();
 		};
 	}
 

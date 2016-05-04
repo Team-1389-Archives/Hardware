@@ -1,9 +1,9 @@
-package com.team1389.hardware.interfaces.outputs;
+package com.team1389.hardware;
 
 import jaci.openrio.toast.lib.log.Logger;
 import jaci.openrio.toast.lib.module.IterativeModule;
 
-public class RobotModule extends IterativeModule {
+public class HardwareModule extends IterativeModule {
 
     public static Logger logger;
 

@@ -1,7 +1,7 @@
 package com.team1389.hardware.util.state;
 
 public class StateTracker {
-	State lastState;
+	StateSetup lastState;
 	
 	public StateTracker(){
 		lastState = null;
@@ -22,8 +22,11 @@ public class StateTracker {
 
 		@Override
 		public void init() {
-			if (lastState != this){
-				lastState = this;
+			if (lastState != setup){
+				if (lastState != null){
+					lastState.end();
+				}
+				lastState = setup;
 				setup.setup();
 			}
 		}
