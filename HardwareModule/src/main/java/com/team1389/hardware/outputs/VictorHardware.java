@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Victor;
  * A victor motor controller
  * @author Jacob Prinz
  */
-public class VictorHardware implements VoltageOutput, Watchable{
+public class VictorHardware implements Watchable{
 	
 	Victor wpiVictor;
 	
@@ -20,9 +20,14 @@ public class VictorHardware implements VoltageOutput, Watchable{
 		wpiVictor = new Victor(port);
 	}
 
-	@Override
-	public void setVoltage(double voltage) {
-		wpiVictor.set(voltage);
+	public VoltageOutput getVoltageOutput() {
+		return new VoltageOutput() {
+			
+			@Override
+			public void setVoltage(double voltage) {
+				wpiVictor.set(voltage);
+			}
+		};
 	}
 
 	@Override

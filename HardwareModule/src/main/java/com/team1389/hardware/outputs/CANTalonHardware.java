@@ -7,6 +7,7 @@ import com.team1389.hardware.configuration.PIDConstants;
 import com.team1389.hardware.control.PIDConfiguration;
 import com.team1389.hardware.interfaces.inputs.PositionInput;
 import com.team1389.hardware.interfaces.inputs.SpeedInput;
+import com.team1389.hardware.interfaces.outputs.CANTalonFollower;
 import com.team1389.hardware.interfaces.outputs.PositionOutput;
 import com.team1389.hardware.interfaces.outputs.SpeedOutput;
 import com.team1389.hardware.interfaces.outputs.VoltageOutput;
@@ -72,6 +73,20 @@ public class CANTalonHardware implements Watchable{
 	public PositionInput getPositionInput(){
 		return () -> {
 			return wpiTalon.getPosition();
+		};
+	}
+	
+	public CANTalonFollower getFollower(CANTalonHardware toFollow){
+		State followingState = stateTracker.newState(() -> {
+			wpiTalon.changeControlMode(TalonControlMode.Follower);
+			wpiTalon.set(toFollow.wpiTalon.getDeviceID());
+		});
+		
+		return new CANTalonFollower() {
+			@Override
+			public void follow() {
+				followingState.init();
+			}
 		};
 	}
 

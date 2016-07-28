@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import com.team1389.hardware.interfaces.inputs.OnOffInput;
+import com.team1389.hardware.interfaces.inputs.DigitalInput;
 import com.team1389.hardware.interfaces.inputs.POVInput;
 import com.team1389.hardware.interfaces.inputs.RangeInput;
 import com.team1389.hardware.watch.Watchable;
@@ -19,7 +19,7 @@ public class JoystickController implements Watchable{
 		wpiJoystick = new Joystick(port);
 	}
 	
-	public OnOffInput getButton(int button){
+	public DigitalInput getButton(int button){
 		return () -> {
 			return wpiJoystick.getRawButton(button);
 		};
