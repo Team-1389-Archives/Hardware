@@ -11,6 +11,8 @@ import com.team1389.hardware.interfaces.outputs.CANTalonFollower;
 import com.team1389.hardware.interfaces.outputs.PositionOutput;
 import com.team1389.hardware.interfaces.outputs.SpeedOutput;
 import com.team1389.hardware.interfaces.outputs.VoltageOutput;
+import com.team1389.hardware.registry.CANPort;
+import com.team1389.hardware.registry.Constructor;
 import com.team1389.hardware.util.state.State;
 import com.team1389.hardware.util.state.StateTracker;
 import com.team1389.hardware.watch.Watchable;
@@ -19,17 +21,24 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
 public class CANTalonHardware implements Watchable{
-	final StateTracker stateTracker;
-	final CANTalon wpiTalon;
+	public static final Constructor<CANPort, CANTalonHardware> constructor = (CANPort port) -> {
+		return new CANTalonHardware(port);
+	};
+	
+	private final StateTracker stateTracker;
+	private final CANTalon wpiTalon;
+	private String currentMode;
 
-	public CANTalonHardware(int deviceNumber) {
+	private CANTalonHardware(CANPort port) {
 		stateTracker = new StateTracker();
-		wpiTalon = new CANTalon(deviceNumber);
+		wpiTalon = new CANTalon(port.number);
+		currentMode = "None";
 	}
 
 	public VoltageOutput getVoltageOutput() {
 		State voltageState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.PercentVbus);
+			currentMode = "Voltage Control";
 		});
 		
 		return (double voltage) -> {
@@ -43,6 +52,7 @@ public class CANTalonHardware implements Watchable{
 			wpiTalon.changeControlMode(TalonControlMode.Speed);
 			setPidConstants(wpiTalon, config.pidConstants);
 			wpiTalon.reverseSensor(config.isSensorReversed);
+			currentMode = "Speed";
 		});
 
 		return (double speed) -> {
@@ -56,6 +66,7 @@ public class CANTalonHardware implements Watchable{
 			wpiTalon.changeControlMode(TalonControlMode.Position);
 			setPidConstants(wpiTalon, config.pidConstants);
 			wpiTalon.reverseSensor(config.isSensorReversed);
+			currentMode = "Position";
 		});
 
 		return (double position) -> {
@@ -80,6 +91,7 @@ public class CANTalonHardware implements Watchable{
 		State followingState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.Follower);
 			wpiTalon.set(toFollow.wpiTalon.getDeviceID());
+			currentMode = "Follower";
 		});
 		
 		return new CANTalonFollower() {
@@ -106,6 +118,7 @@ public class CANTalonHardware implements Watchable{
 		info.put("speed", "" + wpiTalon.getSpeed());
 		info.put("position", "" + wpiTalon.getPosition());
 		info.put("voltage out", "" + wpiTalon.getOutputVoltage());
+		info.put("mode", currentMode);
 		
 		return info;
 	}

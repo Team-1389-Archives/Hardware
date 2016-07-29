@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.team1389.hardware.interfaces.outputs.VoltageOutput;
+import com.team1389.hardware.registry.Constructor;
+import com.team1389.hardware.registry.PWMPort;
 import com.team1389.hardware.watch.Watchable;
 
 import edu.wpi.first.wpilibj.Victor;
@@ -13,11 +15,14 @@ import edu.wpi.first.wpilibj.Victor;
  * @author Jacob Prinz
  */
 public class VictorHardware implements Watchable{
+	public static final Constructor<PWMPort, VictorHardware> constructor = (PWMPort port) -> {
+		return new VictorHardware(port);
+	};
 	
 	Victor wpiVictor;
 	
-	public VictorHardware(int port) {
-		wpiVictor = new Victor(port);
+	private VictorHardware(PWMPort port) {
+		wpiVictor = new Victor(port.number);
 	}
 
 	public VoltageOutput getVoltageOutput() {

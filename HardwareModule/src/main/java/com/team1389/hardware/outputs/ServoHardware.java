@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.team1389.hardware.interfaces.inputs.PositionInput;
 import com.team1389.hardware.interfaces.outputs.PositionOutput;
+import com.team1389.hardware.registry.Constructor;
+import com.team1389.hardware.registry.PWMPort;
 import com.team1389.hardware.watch.Watchable;
 
 import edu.wpi.first.wpilibj.Servo;
@@ -13,23 +15,28 @@ import edu.wpi.first.wpilibj.Servo;
  * A Servo motor
  * @author Jacob Prinz
  */
-public class ServoHardware implements PositionOutput, PositionInput, Watchable{
+public class ServoHardware implements Watchable{
+	public static final Constructor<PWMPort, ServoHardware> constructor = (PWMPort port) -> {
+		return new ServoHardware(port);
+	};
+	
 	Servo wpiServo;
 	
 	/**
 	 * @param port PWM port that servo is plugged into
 	 */
-	public ServoHardware(int port) {
-		wpiServo = new Servo(port);
+	private ServoHardware(PWMPort port) {
+		wpiServo = new Servo(port.number);
 	}
 	
 	public int getPort(){
 		return wpiServo.getChannel();
 	}
-
-	@Override
-	public void setPosition(double position) {
-		wpiServo.set(position);
+	
+	public PositionOutput getPositionOutput(){
+		return (double position) -> {
+			wpiServo.set(position);
+		};
 	}
 
 	@Override
@@ -40,12 +47,13 @@ public class ServoHardware implements PositionOutput, PositionInput, Watchable{
 	@Override
 	public Map<String, String> getInfo() {
 		Map<String, String> info = new HashMap<>();
-		info.put("position", "" + getPosition());
+		info.put("position", "" + wpiServo.getPosition());
 		return info;
 	}
-
-	@Override
-	public double getPosition() {
-		return wpiServo.getPosition();
+	
+	public PositionInput getPositionInput(){
+		return () -> {
+			return wpiServo.getPosition();
+		};
 	}
 }
