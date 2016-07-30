@@ -21,4 +21,9 @@ public class HardwareModule extends IterativeModule {
     public void robotInit() {
         logger = new Logger("Hardware", Logger.ATTR_DEFAULT);
     }
+    
+    @Override
+    public void teleopInit() {
+    	System.out.println("dfasdafsd");
+    }
 }
