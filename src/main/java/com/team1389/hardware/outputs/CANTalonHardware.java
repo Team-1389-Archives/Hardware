@@ -11,8 +11,7 @@ import com.team1389.hardware.interfaces.outputs.CANTalonFollower;
 import com.team1389.hardware.interfaces.outputs.PositionOutput;
 import com.team1389.hardware.interfaces.outputs.SpeedOutput;
 import com.team1389.hardware.interfaces.outputs.VoltageOutput;
-import com.team1389.hardware.registry.CANPort;
-import com.team1389.hardware.registry.Constructor;
+import com.team1389.hardware.registry.Registry;
 import com.team1389.hardware.util.state.State;
 import com.team1389.hardware.util.state.StateTracker;
 import com.team1389.hardware.watch.Watchable;
@@ -20,21 +19,31 @@ import com.team1389.hardware.watch.Watchable;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
+/**
+ * An object that can control a CAN Talon
+ * 
+ * This class will automatically keep track of what state the talon is in, and configure it
+ * Makes it easy to e.g. switch between voltage and PID control
+ * @author jacob
+ *
+ */
 public class CANTalonHardware implements Watchable{
-	public static final Constructor<CANPort, CANTalonHardware> constructor = (CANPort port) -> {
-		return new CANTalonHardware(port);
-	};
-	
 	private final StateTracker stateTracker;
 	private final CANTalon wpiTalon;
 	private String currentMode;
 
-	private CANTalonHardware(CANPort port) {
+	public CANTalonHardware(int canPort, Registry registry) {
+		registry.claimCANPort(canPort);
+		registry.registerWatcher(this);
+		wpiTalon = new CANTalon(canPort);
+
 		stateTracker = new StateTracker();
-		wpiTalon = new CANTalon(port.number);
 		currentMode = "None";
 	}
 
+	/**
+	 * @return a {@link VoltageOutput} that can control the CAN Talon in voltage mode
+	 */
 	public VoltageOutput getVoltageOutput() {
 		State voltageState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.PercentVbus);
@@ -47,6 +56,11 @@ public class CANTalonHardware implements Watchable{
 		};
 	}
 
+	/**
+	 * 
+	 * @param config The PID configuration that the talon will use
+	 * @return A {@link SpeedOutput} that can control the talon
+	 */
 	public SpeedOutput getSpeedOutput(PIDConfiguration config) {
 		State speedState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.Speed);
@@ -61,6 +75,11 @@ public class CANTalonHardware implements Watchable{
 		};
 	}
 
+	/**
+	 * 
+	 * @param config The PID configuration that the talon will use
+	 * @return A {@link PositionOutput} that controls the talon
+	 */
 	public PositionOutput getPositionOutput(PIDConfiguration config) {
 		State positionState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.Position);
@@ -87,6 +106,11 @@ public class CANTalonHardware implements Watchable{
 		};
 	}
 	
+	/**
+	 * 
+	 * @param toFollow The other talon that this talon should follow
+	 * @return A {@link CANTalonFollower} that when called will make this talon follow toFollow
+	 */
 	public CANTalonFollower getFollower(CANTalonHardware toFollow){
 		State followingState = stateTracker.newState(() -> {
 			wpiTalon.changeControlMode(TalonControlMode.Follower);
